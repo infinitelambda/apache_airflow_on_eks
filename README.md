@@ -1,5 +1,7 @@
 # Airflow on EKS
 
+created by: Infinite Lambda. Visit our website: https://infinitelambda.com
+
 This project is a template for easily deploying Apache Airflow on AWS EKS and using various functionalities of Airflow with DAGs that test the CPU and memory usage of differently sized instances, including two node groups and a Fargate profile.  
 
 ## Prerequisites:  
