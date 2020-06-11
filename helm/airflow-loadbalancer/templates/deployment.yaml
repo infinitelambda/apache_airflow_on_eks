@@ -1,0 +1,87 @@
+# Airflow
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow
+spec:
+  selector:
+    matchLabels:
+      app: airflow
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: airflow
+    spec:
+      initContainers:
+        - name: init-db
+          image: "{{ .Values.dags_image.repository }}:{{ .Values.dags_image.tag }}"
+          imagePullPolicy: Always
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - "/usr/local/bin/bootstrap.sh"
+          env:
+          - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+            valueFrom:
+              secretKeyRef:
+                key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+                name: airflow-secrets
+          - name: AFPW
+            valueFrom:
+              secretKeyRef:
+                key: AFPW
+                name: airflow-secrets
+      containers:
+      - name: web
+        image: "{{ .Values.dags_image.repository }}:{{ .Values.dags_image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - name: web
+          containerPort: 8080
+        command:
+          - "airflow"
+        args:
+          - "webserver"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 240
+          periodSeconds: 60
+        env:
+        - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+          valueFrom:
+            secretKeyRef:
+              key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              name: airflow-secrets
+      - name: scheduler
+        image: "{{ .Values.dags_image.repository }}:{{ .Values.dags_image.tag }}"
+        imagePullPolicy: Always
+        command:
+          - "airflow"
+        args:
+          - "scheduler"
+        env:
+        - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+          valueFrom:
+            secretKeyRef:
+              key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              name: airflow-secrets
+      nodeSelector:
+        kubernetes.io/os: "{{ .Values.node_selector.os }}"
+---
+# LoadBalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow
+spec:
+  type: LoadBalancer
+  selector:
+    app: airflow
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

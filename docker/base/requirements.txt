@@ -1,0 +1,7 @@
+marshmallow<2.20
+virtualenv
+psycopg2
+requests
+datetime
+Werkzeug<0.16.0
+airflow-exporter

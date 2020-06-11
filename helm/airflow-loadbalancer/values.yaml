@@ -1,0 +1,10 @@
+# URL of the Dag ECR repository
+dags_image:
+  repository: <ECR DAG URL>
+  tag: latest
+
+# This selector value defines what Airflow will run on. In our case, we wanted to deploy Airflow to all of our EC2 instances,
+# so we have given a value here that was true for all of our instances. Node labels can be checked with:
+# "kubectl get node --show-labels"
+node_selector:
+  os: "linux"

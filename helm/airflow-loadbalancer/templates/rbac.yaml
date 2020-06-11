@@ -1,0 +1,47 @@
+# Nodes
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-access-default
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "deployments", "pods/exec", "persistentvolumeclaims", "secrets"]
+    verbs: ["get", "watch", "list", "log", "create", "update", "patch", "delete", "read"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-access-default
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: pods-access-default
+  apiGroup: rbac.authorization.k8s.io
+---
+# Fargate
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-access-fargate
+  namespace: fargate
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "deployments", "pods/exec", "persistentvolumeclaims", "secrets"]
+    verbs: ["get", "watch", "list", "log", "create", "update", "patch", "delete", "read"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pods-access-fargate
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: fargate
+roleRef:
+  kind: ClusterRole
+  name: pods-access-fargate
+  apiGroup: rbac.authorization.k8s.io
