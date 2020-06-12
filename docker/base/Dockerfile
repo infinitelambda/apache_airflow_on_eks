@@ -1,7 +1,7 @@
 FROM python:3.7-slim-buster
 
 # Airflow Config
-ARG AIRFLOW_VERSION=1.10.9
+ARG AIRFLOW_VERSION=1.10.10
 ARG AIRFLOW_HOME=/usr/local/airflow
 ARG AIRFLOW_DEPS="kubernetes,s3,password,crypto"
 ARG AIRFLOW_USER=airflow
