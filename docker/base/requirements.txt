@@ -1,7 +1,8 @@
-marshmallow<2.20
+marshmallow<3.0.0
 virtualenv
 psycopg2
 requests
 datetime
-Werkzeug<0.16.0
 airflow-exporter
+werkzeug<1.0.0
+docutils<0.16
